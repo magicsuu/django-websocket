@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .message {
+            height: 300px;
+            border: 1px solid #dddddd;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="message" id="message"></div>
+<div>
+    <input type="text" placeholder="请输入" id="txt">
+    <input type="button" value="发送" onclick="sendMessage()">
+    <input type="button" value="关闭连接" onclick="closeConnet();">
+</div>
+
+<script>
+    socket = new WebSocket("ws://127.0.0.1:8000/room/{{ qq_group_num }}/");
+
+    {# 创建好连接之后，自动触发（服务端执行self.accept()，握手环节）#}
+    socket.onopen = function (event) {
+        let tag = document.createElement("div")
+        tag.innerText = "[连接成功]"
+        document.getElementById("message").appendChild(tag)
+    }
+
+    {# 客户端接收到服务端发来的消息，自动触发 #}
+    socket.onmessage = function (event) {
+        {#console.log(event.data)#}
+        let tag = document.createElement("div")
+        tag.innerText = event.data
+        document.getElementById("message").appendChild(tag)
+    }
+
+    {# 服务端主动断开连接时，方法被触发 #}
+    socket.onclose = function (event) {
+    let tag = document.createElement("div")
+        tag.innerText = "[断开连接]"
+        document.getElementById("message").appendChild(tag)
+    }
+
+    function sendMessage() {
+        let tag = document.getElementById("txt");
+        socket.send(tag.value);
+    }
+
+    {# 客户端主动断开连接 #}
+    function closeConnet() {
+        socket.close()
+    }
+
+</script>
+{#<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>#}
+{#<script>#}
+{#    USER_UID = "{{ uid }}"#}
+{##}
+{#    function sendMessage() {#}
+{#        var text = $("#text").val();#}
+{##}
+{#        $.ajax({#}
+{#            url: '/send/msg/',#}
+{#            type: 'GET',#}
+{#            data: {#}
+{#                text: text#}
+{#            },#}
+{#            success: function (res) {#}
+{#                console.log("请求发送成功", res);#}
+{#            }#}
+{#        })#}
+{#    }#}
+{#</script>#}
+</body>
+</html>
