@@ -1,2 +1,3 @@
 # django-websocket
-通过django的channels方法，使用websocket，建立聊天室功能
+
+Using Django channels and WebSocket, establish chat room functionality
